@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use app\models\User;
+use yii\jui\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Loan */
@@ -12,21 +15,27 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    <?= $form->field($model, 'amount')->textInput(['type' => 'number']) ?>
 
-    <?= $form->field($model, 'amount')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'interest')->textInput(['type' => 'number']) ?>
 
-    <?= $form->field($model, 'interest')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'duration')->textInput(['type' => 'number']) ?>
 
-    <?= $form->field($model, 'duration')->textInput() ?>
+    <?= $form->field($model, 'start_date')->widget(DatePicker::class, [
+        'options' => [
+            'class' => 'form-control',
+        ],
+    ]) ?>
 
-    <?= $form->field($model, 'start_date')->textInput() ?>
+    <?= $form->field($model, 'end_date')->widget(DatePicker::class, [
+        'options' => [
+            'class' => 'form-control',
+        ],
+    ]) ?>
 
-    <?= $form->field($model, 'end_date')->textInput() ?>
+    <?= $form->field($model, 'campaign')->textInput(['type' => 'number']) ?>
 
-    <?= $form->field($model, 'campaign')->textInput() ?>
-
-    <?= $form->field($model, 'status')->checkbox() ?>
+    <?= $form->field($model, 'user_id')->dropDownList(ArrayHelper::map(User::find()->all(), 'id', 'fullName')) ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

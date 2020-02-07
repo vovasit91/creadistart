@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\forms\LoanForm;
 use Yii;
 use app\models\Loan;
 use app\models\LoanSearch;
@@ -64,10 +65,10 @@ class LoansController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Loan();
+        $model = new LoanForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->getLoan()->id]);
         }
 
         return $this->render('create', [

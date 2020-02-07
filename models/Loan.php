@@ -38,12 +38,19 @@ class Loan extends \yii\db\ActiveRecord
             [['amount', 'interest'], 'number'],
             [['start_date', 'end_date'], 'safe'],
             [['status'], 'boolean'],
+            [['start_date', 'end_date'], 'filter', 'filter' => [$this, 'toTimestamp']],
+            [['user_id', 'duration', 'campaign'], 'filter', 'filter' => 'intval'],
+            [['amount', 'interest'], 'filter', 'filter' => 'floatval'],
+            [['status'], 'filter', 'filter' => 'boolval'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function toTimestamp($value)
+    {
+        $dt = \DateTime::createFromFormat('d-m-Y', $value);
+        return $dt ? $dt->getTimestamp() : intval($value);
+    }
+
     public function attributeLabels()
     {
         return [
