@@ -11,6 +11,11 @@ use app\models\Loan;
  */
 class LoanSearch extends Loan
 {
+    public $start_date_from;
+    public $start_date_to;
+    public $end_date_from;
+    public $end_date_to;
+
     /**
      * {@inheritdoc}
      */
@@ -22,6 +27,24 @@ class LoanSearch extends Loan
             [['start_date', 'end_date'], 'safe'],
             [['status'], 'boolean'],
         ];
+    }
+
+    public function startDateToParts($value)
+    {
+        $dates = explode(' - ', $value);
+        if(count($dates) === 2){
+            $this->start_date_from  = strtotime($dates[0]);
+            $this->start_date_to    = strtotime($dates[1]);
+        }
+    }
+
+    public function endDateToParts($value)
+    {
+        $dates = explode(' - ', $value);
+        if(count($dates) === 2){
+            $this->end_date_from  = strtotime($dates[0]);
+            $this->end_date_to    = strtotime($dates[1]);
+        }
     }
 
     /**
@@ -52,6 +75,8 @@ class LoanSearch extends Loan
 
         $this->load($params);
 
+        $this->startDateToParts($params['LoanSearch']['start_date']);
+        $this->endDateToParts($params['LoanSearch']['end_date']);
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -65,11 +90,11 @@ class LoanSearch extends Loan
             'amount' => $this->amount,
             'interest' => $this->interest,
             'duration' => $this->duration,
-            'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
             'campaign' => $this->campaign,
             'status' => $this->status,
         ]);
+        $query->andFilterWhere(['between', 'start_date', $this->start_date_from, $this->start_date_to]);
+        $query->andFilterWhere(['between', 'end_date', $this->end_date_from, $this->end_date_to]);
 
         return $dataProvider;
     }

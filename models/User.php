@@ -28,9 +28,6 @@ class User extends \yii\db\ActiveRecord
         return '{{%user}}';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [

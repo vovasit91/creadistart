@@ -25,23 +25,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'first_name:ntext',
             'last_name:ntext',
-            'email:ntext',
+            'email:html',
             'personal_code',
-            [
-                'value' => function(\app\models\User $model){
-                    return $model->birthday->format('d-m-Y');
-                },
-                'label' => 'Birthday'
-            ],
-            //'phone',
-            //'active:boolean',
-            //'dead:boolean',
-            //'lang:ntext',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
