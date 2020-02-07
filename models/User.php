@@ -33,11 +33,32 @@ class User extends \yii\db\ActiveRecord
         return [
             [['first_name', 'last_name', 'email', 'personal_code', 'phone'], 'required'],
             [['first_name', 'last_name', 'email', 'lang'], 'string'],
-            [['personal_code', 'phone'], 'integer'],
+            [['personal_code'], 'integer'],
+            [['personal_code'], 'validatePersonalCode'],
             [['active', 'dead'], 'boolean'],
             [['personal_code', 'phone'], 'filter', 'filter' => 'intval'],
             [['active', 'dead'], 'filter', 'filter' => 'boolval'],
         ];
+    }
+
+    public function validateExactLength($attribute, $params, $validator)
+    {
+        if(mb_strlen($this->$attribute) !== $params['length']){
+            $validator->addError($this, $attribute, Yii::t('app', '{attribute} must be exactly {length}', ['length' => $params['length']]));
+        }
+    }
+
+    public function validatePersonalCode($attribute, $params, $validator)
+    {
+        $month  = substr($this->personal_code, 3, 2);
+        $day    = substr($this->personal_code, 5, 2);
+        $year   = $this->extractBirthYear();
+        if(checkdate($month, $day, $year)) {
+            $this->validateExactLength($attribute, ['length' => 11], $validator);
+        }
+        else{
+            $validator->addError($this, $attribute, Yii::t('app', '{attribute} doesn\'t look like valid estonian personal code'));
+        }
     }
 
     public function beforeSave($insert)
@@ -71,12 +92,23 @@ class User extends \yii\db\ActiveRecord
         return new UserQuery(get_called_class());
     }
 
-    public function getBirthday() : \DateTime
+    public function getBirthday()
+    {
+        $year   = $this->extractBirthYear();
+        $month  = substr($this->personal_code, 3, 2);
+        $day    = substr($this->personal_code, 5, 2);
+
+        $dateString = $year . $month . $day;
+        return checkdate($month, $day, $year) ? date_create_from_format('Ymd', $dateString) : false;
+    }
+
+    private function extractBirthYear()
     {
         $g = substr($this->personal_code, 0, 1);
-        $year = $g < 3 ? 18 : ($g < 5 ? 19 : 20);
-        $dateString = $year . substr($this->personal_code, 1, 6);
-        return date_create_from_format('Ymd', $dateString);
+        $firstPart  = $g < 3 ? 18 : ($g < 5 ? 19 : ($g < 7 ? 20 : false));
+        $secondPart = substr($this->personal_code, 1, 2);
+
+        return $firstPart ? $firstPart . $secondPart : false;
     }
 
     public function getFullName()

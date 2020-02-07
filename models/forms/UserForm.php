@@ -44,7 +44,7 @@ class UserForm extends Model
             $this->user = $user;
         }
         else {
-            $this->errors = $user->errors;
+            $this->addErrors($user->errors);
         }
         return $result;
     }
