@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\AttributeBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%user}}".
@@ -36,6 +38,8 @@ class User extends \yii\db\ActiveRecord
             [['first_name', 'last_name', 'email', 'lang'], 'string'],
             [['personal_code', 'phone'], 'integer'],
             [['active', 'dead'], 'boolean'],
+            [['personal_code', 'phone'], 'filter', 'filter' => 'intval'],
+            [['active', 'dead'], 'filter', 'filter' => 'boolval'],
         ];
     }
 
@@ -76,5 +80,10 @@ class User extends \yii\db\ActiveRecord
         $year = $g < 3 ? 18 : ($g < 5 ? 19 : 20);
         $dateString = $year . substr($this->personal_code, 1, 6);
         return date_create_from_format('Ymd', $dateString);
+    }
+
+    public function getFullName()
+    {
+        return $this->last_name . ' ' . $this->first_name;
     }
 }

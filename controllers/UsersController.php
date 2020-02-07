@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\forms\CreateUserForm;
+use app\models\forms\UserForm;
 use Yii;
 use app\models\User;
 use app\models\UserSearch;
@@ -65,10 +65,10 @@ class UsersController extends Controller
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new UserForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->getUser()->id]);
         }
 
         return $this->render('create', [
