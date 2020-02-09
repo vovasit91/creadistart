@@ -7,9 +7,12 @@
 
 namespace app\assets;
 
-use yii\bootstrap\BootstrapAsset;
+use yii\bootstrap4\BootstrapAsset;
+use yii\bootstrap4\BootstrapPluginAsset;
 use yii\web\AssetBundle;
 use yii\web\YiiAsset;
+use app\assets\FontAwesomeAsset;
+use rmrevin\yii\fontawesome\NpmFreeAssetBundle;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -25,7 +28,9 @@ class AppAsset extends AssetBundle
     public $js = [
     ];
     public $depends = [
-        YiiAsset::class,
-        BootstrapAsset::class
+//        YiiAsset::class,
+        BootstrapAsset::class,
+        BootstrapPluginAsset::class,
+        NpmFreeAssetBundle::class
     ];
 }
